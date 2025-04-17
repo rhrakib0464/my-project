@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f2f2f2;
+        }
+        .container {
+            width: 300px;
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .header {
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        .tab {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        .tab button {
+            flex: 1;
+            padding: 10px;
+            cursor: pointer;
+            background-color: #d3d3d3;
+            border: none;
+            transition: background-color 0.3s;
+        }
+        .tab button.active {
+            background-color: #ffa726;
+        }
+        select, input {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        input.error {
+            border-color: red;
+        }
+        .register-btn {
+            width: 100%;
+            padding: 12px;
+            background-color: #ffa726;
+            border: none;
+            border-radius: 5px;
+            color: #fff;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 15px;
+        }
+        .footer a {
+            color: #ffa726;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">Register</div>
+        <div class="tab">
+            <button class="active" onclick="switchTab('phone')">Phone Register</button>
+            <button onclick="switchTab('email')">Email Register</button>
+        </div>
+        <div id="form-area">
+            <select id="country-code" style="display: none;">
+                <option value="+91">India (+91)</option>
+                <option value="+92">Pakistan (+92)</option>
+                <option value="+93">Afghanistan (+93)</option>
+                <option value="+94">Sri Lanka (+94)</option>
+                <option value="+95">Myanmar (+95)</option>
+                <option value="+96">Maldives (+96)</option>
+                <option value="+97">Nepal (+97)</option>
+            </select>
+            <input type="text" placeholder="Phone/Email" id="email-phone">
+            <input type="password" placeholder="Login Password" id="login-password">
+            <input type="password" placeholder="Withdraw Password" id="withdraw-password">
+            <input type="text" placeholder="WhatsApp" id="whatsapp">
+            <input type="text" placeholder="Referral Code" id="referral-code">
+            <button class="register-btn" onclick="register()">Register</button>
+        </div>
+        <div class="footer">
+            Already have an account? <a href="#" onclick="goToLogin()">Log in</a>
+        </div>
+    </div>
+
+    <script>
+        let currentTab = 'phone';
+        const registeredAccounts = new Set();
+
+        function switchTab(type) {
+            currentTab = type;
+            const buttons = document.querySelectorAll('.tab button');
+            buttons.forEach(button => button.classList.remove('active'));
+            const countryCodeSelect = document.getElementById('country-code');
+            const emailPhone = document.getElementById('email-phone');
+            
+            if (type === 'phone') {
+                buttons[0].classList.add('active');
+                countryCodeSelect.style.display = 'block';
+                emailPhone.placeholder = "Phone";
+            } else {
+                buttons[1].classList.add('active');
+                countryCodeSelect.style.display = 'none';
+                emailPhone.placeholder = "Email";
+            }
+        }
+
+        function register() {
+            const emailPhone = document.getElementById('email-phone');
+            const loginPassword = document.getElementById('login-password');
+            const withdrawPassword = document.getElementById('withdraw-password');
+            const whatsapp = document.getElementById('whatsapp');
+            const referralCode = document.getElementById('referral-code');
+            const countryCode = document.getElementById('country-code').value;
+
+            const fields = [emailPhone, loginPassword, withdrawPassword, whatsapp, referralCode];
+            let allFilled = true;
+
+            fields.forEach(field => {
+                if (field.value.trim() === "") {
+                    field.classList.add('error');
+                    allFilled = false;
+                } else {
+                    field.classList.remove('error');
+                }
+            });
+
+            if (!allFilled) {
+                alert("Please fill in all fields.");
+                return;
+            }
+
+            const identifier = currentTab === 'phone' ? countryCode + emailPhone.value : emailPhone.value;
+
+            if (registeredAccounts.has(identifier)) {
+                alert("This account already exists.");
+                return;
+            }
+
+            registeredAccounts.add(identifier);
+            alert("Registration successful!");
+            goToLogin();
+        }
+
+        function goToLogin() {
+            window.location.href = "login.html";  // Change to your actual login page
+        }
+    </script>
+</body>
+</html>
